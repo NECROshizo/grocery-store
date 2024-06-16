@@ -67,7 +67,6 @@ class SubCategoreAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'show_category', 'show_subcategory', 'show_preview')
     search_fields = ('title',)
-    # list_filter = ("username", "email",)
     ordering = ('title',)
     list_per_page = 20
 
