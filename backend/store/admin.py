@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 from django.utils.html import format_html, format_html_join
 from django.utils.safestring import SafeText
 
-from .models import Category, Product, SubCategory
+from .models import Category, Product, SubCategory, ShoppingCart
 
 
 class SubCategoryInline(admin.TabularInline):
@@ -82,3 +82,7 @@ class ProductAdmin(admin.ModelAdmin):
     def show_preview(self, obj: SubCategory) -> SafeText:
         images_column = format_html('<img src="{}" style="max-height: 100px;">', obj.original_image.url)
         return images_column
+
+
+# TODO: delete
+admin.site.register(ShoppingCart)

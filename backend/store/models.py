@@ -177,6 +177,7 @@ class ShoppingCart(models.Model):
         error_messages={
             'min_value': _('Минимальное количество продуктов должно быть больше или равно 1'),
         },
+        default=1,
         blank=False,
         null=False,
     )

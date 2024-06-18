@@ -169,3 +169,6 @@ media/
 
 # RUFF
 .ruff_cache/
+
+# env packages
+.packages/
