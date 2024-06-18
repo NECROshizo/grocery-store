@@ -5,13 +5,14 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from store.models import Category, Product, ShoppingCart
 
 from .serializers import (
     CategorySerializer,
     ProductSerializer,
-    ShoppingCartProductSerializer,
+    ShoppingCartInputSerializer,
     ShoppingCartSerializer,
     ShoppingCartSummarySerializer,
 )
@@ -43,10 +44,21 @@ class ShoppingCartView(ListAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
         user = self.request.user
         return ShoppingCart.objects.filter(user=user)
 
+    def _validate_and_serialize_products(self, request):
+        products = request.data.get('products', [])
+        if not products:
+            raise ValidationError({'detail': "Список продуктов должен содержаться в 'products'"})
+
+        serializer = ShoppingCartInputSerializer(data=products, many=True)
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data
+
     def list(self, request, *args, **kwargs):
+        """Метод для получения списка продуктов в корзине с суммарной информацией."""
         response = super().list(request, *args, **kwargs)
         user = request.user
-        summary = ShoppingCart.objects.filter(user=user).aggregate(
+        user_cart = ShoppingCart.objects.filter(user=user).prefetch_related('product')
+        summary = user_cart.aggregate(
             total_items=Sum('count'),
             total_price=Sum(F('count') * F('product__price')),
         )
@@ -54,14 +66,12 @@ class ShoppingCartView(ListAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
         return response
 
     def post(self, request, *args, **kwargs):
-        products = request.data.get('products', [])
+        """Метод для добавления продуктов в корзину."""
+        validated_data = self._validate_and_serialize_products(request)
         user = request.user
 
-        serializer = ShoppingCartProductSerializer(data=products, many=True)
-        serializer.is_valid(raise_exception=True)
-
         with transaction.atomic():
-            for item in serializer.validated_data:
+            for item in validated_data:
                 product = item['product']
                 count = item['count']
                 cart_item, created = ShoppingCart.objects.get_or_create(user=user, product=product)
@@ -73,14 +83,12 @@ class ShoppingCartView(ListAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
         return Response({'result': 'success'}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
-        products = request.data.get('products', [])
+        """Метод для обновления количества продуктов в корзине."""
+        validated_data = self._validate_and_serialize_products(request)
         user = request.user
 
-        serializer = ShoppingCartProductSerializer(data=products, many=True)
-        serializer.is_valid(raise_exception=True)
-
         with transaction.atomic():
-            for item in serializer.validated_data:
+            for item in validated_data:
                 product = item['product']
                 count = item['count']
                 cart_item, _ = ShoppingCart.objects.get_or_create(user=user, product=product)
@@ -89,14 +97,12 @@ class ShoppingCartView(ListAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
         return Response({'result': 'success'}, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
-        products = request.data.get('products', [])
+        """Метод для удаления продуктов из корзины."""
+        validated_data = self._validate_and_serialize_products(request)
         user = request.user
 
-        serializer = ShoppingCartProductSerializer(data=products, many=True)
-        serializer.is_valid(raise_exception=True)
-
         with transaction.atomic():
-            for item in serializer.validated_data:
+            for item in validated_data:
                 product = item['product']
                 count = item['count']
                 cart_item = ShoppingCart.objects.filter(user=user, product=product).first()

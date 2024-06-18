@@ -106,7 +106,7 @@ class ShoppingCartSummarySerializer(serializers.ModelSerializer):
         )
 
 
-class ShoppingCartProductSerializer(serializers.Serializer):
+class ShoppingCartInputSerializer(serializers.Serializer):
     """Сериализатор для взаимодействия продуктов в корзине"""
 
     product = serializers.SlugRelatedField(queryset=Product.objects.all(), slug_field='slug')

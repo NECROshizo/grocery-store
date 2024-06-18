@@ -171,4 +171,4 @@ media/
 .ruff_cache/
 
 # env packages
-.packages/
+packages/
