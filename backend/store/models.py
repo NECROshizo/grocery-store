@@ -130,11 +130,17 @@ class Product(models.Model):
     )
 
     medium_image = ImageSpecField(
-        source='original_image', processors=[ResizeToFill(300, 300)], format='JPEG', options={'quality': 60}
+        source='original_image',
+        processors=[ResizeToFill(300, 300)],
+        format='JPEG',
+        options={'quality': 60},
     )
 
     small_image = ImageSpecField(
-        source='original_image', processors=[ResizeToFill(100, 100)], format='JPEG', options={'quality': 60}
+        source='original_image',
+        processors=[ResizeToFill(100, 100)],
+        format='JPEG',
+        options={'quality': 60},
     )
 
     class Meta:
@@ -171,6 +177,7 @@ class ShoppingCart(models.Model):
         error_messages={
             'min_value': _('Минимальное количество продуктов должно быть больше или равно 1'),
         },
+        default=1,
         blank=False,
         null=False,
     )

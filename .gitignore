@@ -163,3 +163,12 @@ cython_debug/
 
 # Django
 media/
+
+# VScode
+.vscode/
+
+# RUFF
+.ruff_cache/
+
+# env packages
+packages/
