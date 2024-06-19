@@ -12,6 +12,7 @@ load_dotenv(os.path.join(BASE_DIR, '..', 'infra', '.env'))
 SECRET_KEY = os.getenv('PRODUCT_KEY', default=get_random_secret_key())
 
 DEBUG = os.getenv('DEBUG_MODE', 'True') == 'True'
+# DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -103,11 +104,10 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 if DEBUG:
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -120,6 +120,6 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
 }

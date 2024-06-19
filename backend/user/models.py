@@ -8,13 +8,5 @@ class User(AbstractUser):
         verbose_name_plural = _('Пользователи')
         db_table_comment = _('Пользователи')
 
-    @property
-    def is_admin(self):
-        return self.is_staff or self.is_superuser
-
-    @property
-    def is_user(self):
-        return not self.is_admin
-
     def __str__(self) -> str:
         return self.username

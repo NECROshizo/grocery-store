@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
@@ -23,16 +22,6 @@ class BaseCategory(models.Model):
         ],
         unique=True,
     )
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-            # my_string = self.title.translate(
-            #     str.maketrans(
-            #         "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
-            #         "abvgdeejzijklmnoprstufhzcss_y_euaABVGDEEJZIJKLMNOPRSTUFHZCSS_Y_EUA"
-            #     ))
-        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
