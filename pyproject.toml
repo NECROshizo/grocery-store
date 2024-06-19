@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["NECROshizo <necroshizo@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.6"
+djangorestframework = "^3.15.1"
+python-dotenv = "^1.0.1"
+djangorestframework-simplejwt = "^5.3.1"
+pillow = "^10.3.0"
+djoser = "^2.2.3"
+django-imagekit = "^5.0.0"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^22.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4.9"
+pre-commit = "^3.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "venv",
+    "frontendruff",
+    "migrations",
+]
+target-version = "py312"
+line-length = 120
+lint.ignore = ["D"]
+lint.isort.known-first-party = ["api", "config", "store", "user"]
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
